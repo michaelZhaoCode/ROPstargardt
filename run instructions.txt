@@ -1,0 +1,6 @@
+docker run --rm --gpus all -it --shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 -v ./:/workspace nvcr.io/nvidia/caffe:20.03-py3 /bin/bash
+
+pip install lmdb scikit-learn torchvision
+
+
+caffe train --solver=solver.prototxt --gpu=all --weights=VGG19.caffemodel 2>&1 | tee logs/train_fold1.log

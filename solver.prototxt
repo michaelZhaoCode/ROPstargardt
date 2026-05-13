@@ -1,0 +1,25 @@
+# Path to the network definition file
+net: "train_val_softmax.prototxt"
+
+# Optimization settings
+base_lr: 0.0001            # Start with a reasonable learning rate
+lr_policy: "step"         # Change from fixed to step for learning rate decay
+gamma: 0.1                # Reduce learning rate by 10x after steps
+stepsize: 8500           # Reduce learning rate every 10,000 iterations
+momentum: 0.9             # Standard momentum for SGD
+weight_decay: 0.0001      # Regularization to prevent overfitting
+
+# Display and snapshot settings
+display: 500             # Display every 100 iterations
+snapshot: 10000           # Save model every 2000 iterations
+snapshot_prefix: "snapshots/whole/fold"
+
+# Max iterations
+max_iter: 10000          # Train for 10,000 iterations
+
+# Testing
+test_iter: 100            # Number of test batches (adjust based on dataset size)
+test_interval: 1000      # Run validation every 5000 iterations
+
+# Solver mode
+solver_mode: GPU         # Use GPU for training
