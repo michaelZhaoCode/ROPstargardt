@@ -29,7 +29,7 @@ This study investigates whether generative AI—specifically Generative Adversar
 
 To reproduce this study, a researcher should follow these steps:
 
-1.  **Data Preparation (Real Data):** * Run `data.py` on the raw OCT dataset to extract and format 128x128 patches.
+1.  **Data Preparation (Real Data):** Run `data.py` on the raw OCT dataset to extract and format 128x128 patches.
 2.  **GAN Augmentation (External to Codebase):**
     * *Note on running the GAN:* To generate the synthetic data, you will need to train a StyleGAN2-ADA model on the real Stargardt OCT patches extracted in Step 1. Once the model is trained, use it to generate synthetic patches. Merge these synthetic images with your real training dataset (to augment or replace data as described in the paper). 
     * Convert the final merged dataset of images into LMDB format (the standard data format expected by `train_val_softmax.prototxt`).
