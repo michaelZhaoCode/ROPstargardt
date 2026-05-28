@@ -7,6 +7,7 @@ This study investigates whether generative AI—specifically Generative Adversar
 ## File Breakdown
 **Data Processing**
 * **`data.py`**: Handles initial data preprocessing. It parses image metadata, extracts the optimal patches based on intensity and fovea location, and resizes them to 128x128.
+* **`format_dataset.py`**: Partitions the extracted patches into a 5-fold cross-validation framework. It strictly enforces patient-level splitting to prevent spatial data leakage and automatically downsamples the normal (majority) class to maintain exact image-level class balance across all folds.
 * **`filter_images.py`**: A utility script that uses a trained Caffe model to run inference on a folder of images and delete those that do not meet a specific predicted class.
 
 **Caffe Network Configurations (`.prototxt`)**
@@ -30,17 +31,18 @@ This study investigates whether generative AI—specifically Generative Adversar
 To reproduce this study, a researcher should follow these steps:
 
 1.  **Data Preparation (Real Data):** Run `data.py` on the raw OCT dataset to extract and format 128x128 patches.
-2.  **GAN Augmentation (External to Codebase):**
+2.  **Data Splitting & Balancing**: Run `format_dataset.py` to organize the extracted patches into a balanced 5-fold cross-validation structure. This ensures patient-level isolation between training, validation, and testing sets, and establishes an equal ratio of Normal to Stargardt patches.
+3.  **GAN Augmentation (External to Codebase):**
     * *Note on running the GAN:* To generate the synthetic data, you will need to train a StyleGAN2-ADA model on the real Stargardt OCT patches extracted in Step 1. Once the model is trained, use it to generate synthetic patches. Merge these synthetic images with your real training dataset (to augment or replace data as described in the paper). 
     * Convert the final merged dataset of images into LMDB format (the standard data format expected by `train_val_softmax.prototxt`).
-3.  **Environment Setup:**
+4.  **Environment Setup:**
     * Ensure Docker with GPU support is installed.
     * Run the container command from `run instructions.txt` to launch the `nvcr.io/nvidia/caffe:20.03-py3` environment.
     * Install required Python packages inside the container: `pip install lmdb scikit-learn torchvision pandas matplotlib`.
-4.  **Model Training:**
+5.  **Model Training:**
     * Execute the training command: `caffe train --solver=solver.prototxt --gpu=all --weights=VGG19.caffemodel` (ensure the base VGG19 weights are downloaded first).
-5.  **Testing & Visualization:**
+6.  **Testing & Visualization:**
     * Run `test_model.py` using your `.caffemodel` snapshot and `deploy_softmax.prototxt` to get standard classification metrics.
     * Run `test_plot.py` to generate visual comparisons of accuracy across different retinal locations.
-6.  **Statistical Validation:**
+7.  **Statistical Validation:**
     * To prove the efficacy of the GAN augmentation, run `bootstrap_diff.py` and `equivalence_test.py` using the prediction outputs from the baseline model versus the GAN-augmented model.
